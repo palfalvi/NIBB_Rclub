@@ -1,0 +1,638 @@
+---
+title: "Hacky Hours"
+subtitle: "Improving data manipulation and programming skills"
+author: "Palfalvi Gergo"
+date: "9/27/2016"
+encoding: utf-8
+runtime: shiny
+output: 
+  ioslides_presentation:
+    fig_height: 5
+    fig_width: 4
+    fontsize: 40px
+    widescreen: yes
+---
+```{r setup, include=FALSE}
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
+library(tidyverse)
+palette = c("dodgerblue","darkorange","hotpink","limegreen")
+# This is an R setup chunk, containing default options applied to all other chunks
+library(knitr)
+# This sets the chunk default options
+opts_chunk$set(collapse=TRUE, error=FALSE, prompt=TRUE)
+# This sets the chunk display theme
+thm <- knit_theme$get("acid")
+knit_theme$set(thm)
+
+```
+
+
+##Why data manipulation?
+
+
+<center> *“There are no routine statistical questions, only questionable statistical routines.”* </center></br> <p style="text-align:right"> /Sir David Cox/ </p>
+
+</br>
+<center> "*It's commonly said that data scientists spend 80% of their time cleaning and manipulating data and only 20% of their time actually analyzing it. For this reason, it is critical to become familiar with the data cleaning process and all of the tools available to you along the way.*" </center>
+
+
+
+## Time and place
+
+**Every Monday 5:30pm at SmR1 or SmR3**
+
+You will need your computer.
+
+Bring cookies, snacks and drinks to make it more comfortable.
+
+
+## Using R
+
+**Why R**
+
+- Free
+- Easy to learn
+- Powerful high-end developers
+- Continous supports
+- Customizability
+- Easy-to-use UI (RStudio)
+
+## The tidyverse
+
+<div class="columns-2">
+
+**R for Data Science**
+
+- Data visualization
+- Data transformation
+- Exploratory data analysis
+
+
+<img src="http://r4ds.had.co.nz/cover.png"  width="200" alt="Picture">
+
+http://r4ds.had.co.nz
+
+</div>
+
+## Data visualization
+
+<div class="columns-2">
+```{r, echo=FALSE}
+plot(cars)
+abline(lm(cars$dist ~ cars$speed))
+```
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+ggplot(cars,aes(x=speed,y=dist))+geom_point(color="hotpink")+geom_smooth(method="lm")
+```
+</div>
+
+## Data transformation
+
+```{r, echo=FALSE,cache=TRUE}
+data.frame(name=c("John Smith","Carl Sagan","Bob"), day1=c(2,6,4),day2=c(3,12,4)) -> wide_format
+long_format <- tidyr::gather(wide_format,name)
+colnames(long_format)<- c("name","day","amount")
+```
+```{r}
+wide_format
+long_format
+```
+
+## Exploratory data analysis
+
+```{r}
+iris %>% group_by(Species) %>% 
+  summarise(mean(Petal.Length),sd(Petal.Length))
+```
+
+## Using others then R
+
+**UNIX, bash**
+
+- "Server language"
+- Basic file manipulation
+- Job scripting
+
+**Python/Perl/Ruby**
+
+- "Deeper programming"
+- Easier string manipulation (sequnece)
+
+**JavaScript, HTML, YAML, php, etc...**
+
+## Complex workbench example
+
+**RNAseq**
+
+* Using existing programs on **<u>UNIX</u>** to 
+    + QC
+    + Mapping
+    + Expression counting
+* Using random written **<u>Python</u>** scripts to
+    + Data management
+    + Random feature extractions
+* Downstream analysis with **<u>R</u>**
+    + Perform statistical analysis on differences
+    + Visualize data
+    + Make report
+
+## Interactivity
+
+```{r, echo = FALSE}
+library(shiny)
+fluidPage(fluidRow(
+  column(6,selectInput(inputId = "X",label="X variable", choices = colnames(iris[,1:4]),selected = "Petal.Length")),
+  column(6,selectInput(inputId = "Y",label="Y variable", choices = colnames(iris[,1:4]),selected = "Petal.Width"))
+))
+
+renderPlot(width = 1000,expr = {
+  ggplot(iris,aes(x=iris[input$X], y=iris[input$Y])) + geom_point(aes(color=iris$Species)) + geom_smooth(method="lm") + xlab(input$X) + ylab(input$Y)
+})
+```
+
+
+##General workflow of data analysis
+
+<center>
+<img src="http://r4ds.had.co.nz/diagrams/data-science.png">
+</center>
+
+##What is tidy data? 
+
+Storing in consistent form
+
+* Each column is a variable (conditions)
+* Each row is an observation (genes)
+
+
+
+##Installing R and RStudio
+
+
+
+
+##Installing packages
+`tidyverse`
+
+
+
+
+##Coding basics
+
+```{r}
+1 / 100 * 26
+(59 + 73 + 2) / 3
+sin(pi / 2)
+```
+
+
+##Objects
+
+What is a variable/object?
+
+```{r, eval=FALSE}
+object_name <- value
+```
+
+```{r}
+x <- 5
+x
+
+y <- 3 * 4
+y
+
+```
+
+##Tips on naming
+
+* Use consistent style in your code
+* Add informative names
+    + `x` --> too short, easy to forget the content
+    + `these_are_the_expression_values` --> too long
+    + `expr_ltpm` --> informative, good length
+  
+
+```{r,eval=F}
+i_use_snake_case
+otherPeopleUseCamelCase
+some.people.use.periods
+And_aFew.People_RENOUNCEconvention
+```
+
+
+##Tips on typing
+
+* CTRL+Up / CMD+Up to show history
+* Tab to finish variable/function names
+* Alt+Shift+K / Opt+Shift+K
+
+##Functions
+
+`function_name(argument1 = value1,argument2 = value2, ...)`
+
+```{r}
+seq(from = 0, to = 10, by = 2)
+seq(from = 0, to = 10, length.out = 6)
+seq(0,10,2)
+```
+
+##Practice
+
+
+##Data import/export
+
+* <b><u>Plain-text rectangular files</b></u>
+* Pictures
+* Binary files
+* Connections
+
+Base R:
+
+```{r import, eval=F}
+read.table() # space, tab and any charachter 
+read.csv() # , separated
+read.csv2() # ; separated
+```
+
+##Data import/export with tidyverse
+
+* `readr` package
+* ~10x faster
+* automatically converts to `tibble` objects
+    + No `stringsAsFactors`
+
+
+
+```{r import_tidy, eval=F}
+read_table() # space (or tab)
+read_csv() # ,
+read_csv2() # ;
+read_tsv() # tab
+read_delim() # any charachter
+```
+
+
+##Parsing rules
+
+```{r guess_parser}
+guess_parser("2010-10-01")
+guess_parser(c("TRUE", "FALSE"))
+guess_parser(c("1", "5", "9"))
+guess_parser(c("12,352,561"))
+```
+
+##Parsing rules and data types
+
+* `parse_*()` function
+* where '*' can be:
+    + `logical`   (T,F,TRUE,FALSE)
+    + `integer`   (3.14, 4.5e-5)
+    + `double`    ("5", "16", "354")
+    + `number`    ("35,12,14")
+    + `character` ("plain text")
+    + `factor`    ("a", "b", "c")
+    + `date`      ("2010-01-01", "1979/10/14")
+    + `time`      ("10:51 pm", "20:10:01", "13:05")
+    + `datetime`  ("2010-10-01T2010") /ISO8601/
+    
+##Parsing numbers - decimals
+
+* R is US centric
+
+```{r}
+# Used in USA (and Japan)
+parse_double("1.23")
+
+# Used in many parts of Europe
+parse_double("1,23", locale = locale(decimal_mark = ","))
+```
+
+##Parsing numbers - grouping
+
+```{r}
+# Used in USA (and Japan)
+parse_number("$123,456,789")
+
+# Used in many parts of Europe
+parse_number("123.456.789", locale = locale(grouping_mark = "."))
+
+# Used in Switzerland
+parse_number("123'456'789", locale = locale(grouping_mark = "'"))
+```
+
+
+##Parsing texts (strings)
+
+```{r}
+x1 <- c("\x82\xb1\x82\xf1\x82ɂ\xbf\x82\xcd")
+x1
+parse_character(x1, locale = locale(encoding = "Shift-JIS"))
+```
+
+If not working, set locale:
+```{r}
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
+```
+
+##Parsing texts (strings)
+
+```{r}
+x2 <- charToRaw("こんにちは")
+x2
+rawToChar(x2)
+```
+
+
+##Other origins of data
+
+* `xlsx` package (not in tidyverse)
+    + for Excel data
+* `foreign` package (not in tidyverse)
+    + SAS
+    + SPSS
+    + Stata
+    
+##Base R objects - Vectors
+
+```{r vectors}
+a <- c(1,2,3,4,5.3,-3) # numeric vector
+a
+b <- c("one","three","cheese") # character vector
+b
+c <- c(TRUE,TRUE,FALSE,TRUE) # logical vector
+c
+```
+
+##Base R objects - Matrices
+
+```{r matrices}
+y<-matrix(1:20, nrow=4,ncol=5) #default arrangment is by column
+y
+
+cells <- c(1,26,24,68)
+rnames <- c("R1", "R2") # row names
+cnames <- c("C1", "C2") # column names
+mymatrix <- matrix(cells, nrow=2, ncol=2, byrow=TRUE,dimnames=list(rnames, cnames))
+mymatrix
+```
+
+##Base R objects - Data frames
+
+```{r data_frames}
+d <- c(1,2,3,4)
+e <- c("red", "white", "red", NA)
+f <- c(TRUE,TRUE,TRUE,FALSE)
+mydata <- data.frame(d,e,f)
+names(mydata) <- c("ID","Color","Passed") # variable names
+mydata
+```
+
+Remember about tidy data:
+
+* Each column is a variable (conditions)
+* Each row is an observation (genes)
+
+##Base R objects - Lists
+
+```{r lists}
+w <- list(name="Fred", mydata=mydata, age=5.3)
+w
+```
+
+##Subsetting practice
+
+use `airquality`, `mtcars`, `DNase`, `PlantGrowth`, `anscombe`, `iris` datasets
+
+##Introducing `tibble`
+
+* Tibbles *are* data frames
+* Never changes an input’s type (no more `stringsAsFactors = FALSE` !)
+* Use with list-columns
+* Never adjusts the names of variables
+* Never uses `row.names()` (remember about tidy data)
+* More strict on subsetting (with [, [[ and $)
+* Always adapt to screen size
+
+
+##Converting to tibble
+
+```{r tibble_1}
+as_tibble(iris)
+```
+
+##Open files as tibbles
+
+Use ```read_*()``` instead of ```read.*()```  
+(Sometimes use ```read.table()``` and ```as_tibble()```)
+
+|Arguments        |                                                 |
+|----------------:|:-----------------------------------------------------------|
+| ```file```      | Either a path to a file, a connection, or literal data     |
+| ```col_names``` |  Either TRUE, FALSE or a character vector of column names. |
+| ```col_types``` | One of NULL, a cols specification, or a string.            |
+| ```na```        | Character vector of strings to use for missing values.     |
+| ```skip```      | Number of lines to skip before reading data.               |
+
+
+For more information: ```?read_table```
+
+##Visualizing data - Basic plots
+
+* R has built-in plotting functions
+    + ```plot()```
+    + ```boxplot()```
+    + ```hist()```
+    + etc...    
+    
+    
+##Visualizing data - Basic examples
+<div class="columns-2">
+
+
+```{r}
+plot(cars)
+```
+
+
+
+```{r}
+boxplot(cars)
+```
+
+</div>
+
+##Visualizing data - in a tidy way
+<div class="columns-2">
+
+* Using *Grammar of Graphics*
+    + Data
+    + aes(thetics)
+    + geom(metrics) 
+    
+
+<img src="http://www.science-craft.com/wp-content/uploads/2014/06/ggplot-2.png"  width="400" alt="Picture">
+
+
+* ```ggplot2``` package
+
+<img src="https://github.com/tidyverse/ggplot2/raw/master/logo.png"  width="100" alt="Picture">
+
+</div>
+
+##Visualizing data - ggplot example
+
+
+```{r, fig.align='center',fig.height=3}
+ggplot( data = cars, aes(x = speed, y = dist )) + 
+  geom_point( color = "hotpink" ) + 
+  geom_smooth( method = "lm" )
+```
+
+
+##Question - What is the difference? {.columns-2}
+
+```{r, fig.align='center',fig.height=3, echo=FALSE}
+ggplot( data = cars, 
+        aes(x = speed, y = dist )) + 
+  geom_point( color = "hotpink" )
+```
+
+
+
+```{r, fig.align='center',fig.height=3, eval=FALSE}
+ggplot( data = cars, 
+        aes(x = speed, y = dist )) + 
+  geom_point( color = "hotpink" )
+```
+
+```{r, fig.align='center',fig.height=3,eval=FALSE}
+ggplot( data = cars ) + 
+  geom_point(aes(x = speed, y = dist),
+             color = "hotpink" )
+```
+
+Let's try to add ```geom_smooth(method="lm")```
+</div>
+
+
+##Aesthetic mappings
+
+* Color - discrete or continuous
+* Shape - discrete
+* Size - continuous
+* Alpha (transparency) - continuous
+
+##Aesthetic mapping - example
+
+```{r, fig.align='center', fig.height=3.4, fig.width=6}
+ggplot(data = iris) +
+  geom_point(aes(x = Petal.Length, 
+                 y = Petal.Width,
+                 color = Species))
+```
+
+##Facetting - with one variable
+
+```{r, fig.align='center', fig.height=3.4, fig.width=6}
+ggplot(data = iris) +
+  geom_point(aes(x = Petal.Length, 
+                 y = Petal.Width)) +
+  facet_wrap(~ Species)
+```
+
+
+##Facetting - with 2 variables
+```{r, fig.align='center', fig.height=3.4, fig.width=6}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
+```
+
+
+##Geometric objects
+
+
+|| Primitives | One variable | Two variables <br> cont x,y | Two variables <br> disc x, cont y | Errors |
+|:-|:-|:-|:-|:-|:-|
+|```geom_```|```blank()``` <br><br> ```curve()``` <br><br> ```path()``` <br><br> ```polygon()``` <br><br> ```rect()``` <br><br> ```ribbon()``` <br><br> ```segment()```| ```area()``` <br><br> ```density()``` <br><br> ```dotplot()``` <br><br> ```freqplot()``` <br><br> ```histogram()```| ```label()``` <br><br> ```jitter()``` <br><br> ```point()``` <br><br> ```quantile()``` <br><br> ```rug()``` <br><br> ```smooth()``` <br><br> ```text()``` |```bar()``` <br><br> ```boxplot()``` <br><br> ```dotplot()``` <br><br> ```violin()```| ```crossbar()``` <br><br> ```errorbar()``` <br><br> ```linerange()``` <br><br> ```pointrange()```|
+
+##Using global aesthetics
+
+```{r, fig.align='center', fig.height=3.4, fig.width=6}
+ggplot(data = iris, 
+       aes(x = Petal.Length, 
+           y = Petal.Width)) +
+  geom_point(aes(color = Species)) +
+  geom_smooth(method="lm")
+  
+```
+
+##Statistical transformations
+
+
+
+##Coordinate system
+
+* ```coord_cartesian()```
+    + change xlim and ylim
+    + ```xlim()``` and ```ylim()``` also exist, but slightly different!
+* ```coord_fixed(ratio=1/2)```
+* ```coord_flip()```
+* ```coord_polar()```
+    + Polar coordinates
+* ```coord_trans()```
+* ```coord_map()```
+
+##Data transformation - dplyer
+
+
+
+##Data tidying - tidyr
+
+
+
+##Strings - stringr
+
+
+
+##Sequences as strings
+
+
+##Programming
+
+##Pipes (magrittr)
+
+##%>% pipe
+
+##%T>% "tee pipe"
+
+##%<>% Replacement 
+
+##If
+
+##If else
+
+##Multiple if
+
+##Iterations
+
+##For loops
+
+##Looping patterns
+
+##Unknown output length
+
+##Unknown sequence length
+
+##The ```apply()``` family
+
+##The tidy ```apply()``` : ```purrr::map()```
+
+##Excercises on sequences 
+
+##Models
+
+##R Markdown
