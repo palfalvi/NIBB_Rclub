@@ -1,21 +1,22 @@
 ---
 title: "Hacky Hours"
-subtitle: "Improving data manipulation and programming skills"
 author: "Palfalvi Gergo"
-date: "9/27/2016"
-encoding: utf-8
-runtime: shiny
-output: 
+date: "11/25/2016"
+output:
+  slidy_presentation: default
   ioslides_presentation:
     fig_height: 5
     fig_width: 4
     fontsize: 40px
     widescreen: yes
+subtitle: Improving data manipulation and programming skills
+encoding: utf-8
+transition: rotate
+#runtime: shiny
 ---
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo = FALSE, eval =TRUE}
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 library(tidyverse)
-library(ggbio)
 library(knitr)
 palette = c("dodgerblue","darkorange","hotpink","limegreen")
 
@@ -39,7 +40,9 @@ knit_theme$set(thm)
 
 ## Time and place
 
-**Every Monday 5:30pm at SmR1 or SmR3**
+**Every Monday 5:30pm (?) at SmR1 or SmR3**
+
+https://github.com/palfalvi/NIBB_Rclub
 
 You will need your computer.
 
@@ -139,20 +142,6 @@ iris %>% group_by(Species) %>%
     + Visualize data
     + Make report
 
-## Interactivity
-
-```{r, echo = FALSE}
-library(shiny)
-fluidPage(fluidRow(
-  column(6,selectInput(inputId = "X",label="X variable", choices = colnames(iris[,1:4]),selected = "Petal.Length")),
-  column(6,selectInput(inputId = "Y",label="Y variable", choices = colnames(iris[,1:4]),selected = "Petal.Width"))
-))
-
-renderPlot(width = 1000,expr = {
-  ggplot(iris,aes(x=iris[input$X], y=iris[input$Y])) + geom_point(aes(color=iris$Species)) + geom_smooth(method="lm") + xlab(input$X) + ylab(input$Y)
-})
-```
-
 
 ##General workflow of data analysis
 
@@ -171,11 +160,24 @@ Storing in consistent form
 
 ##Installing R and RStudio
 
+* https://cran.r-project.org   
+#Install the most recent R version: 3.3.2 a.k.a. Sincere Pumpkin Patch
 
+* https://www.rstudio.com
+#Install the most recent Rstudio: v1.0.44 (Important, new features!)
 
 
 ##Installing packages
-`tidyverse`
+
+```{r, eval=F}
+install.packages("tidyverse")
+library(tidyverse)
+
+#From Bioconductor (bioconductor.org)
+source("https://bioconductor.org/biocLite.R")
+biocLite("TCC")
+library(TCC)
+```
 
 
 
@@ -239,8 +241,6 @@ seq(from = 0, to = 10, length.out = 6)
 seq(0,10,2)
 ```
 
-##Practice
-
 
 ##Data import/export
 
@@ -274,6 +274,20 @@ read_tsv() # tab
 read_delim() # any charachter
 ```
 
+
+##Practice
+
+https://github.com/palfalvi/NIBB_Rclub
+
+Download
+
+* anorexia_bad.xlsx
+* anorexia.csv
+* pokemons.csv
+
+Try some functions:
+* ```summary()```
+* ```t.test()```
 
 ##Parsing rules
 
@@ -438,6 +452,22 @@ Use ```read_*()``` instead of ```read.*()```
 
 
 For more information: ```?read_table```
+
+##More practice
+
+https://github.com/palfalvi/NIBB_Rclub
+
+Download and open as tibbles
+
+* anorexia_bad.xlsx
+* anorexia.csv
+* pokemons.csv
+
+Try some functions:
+* ```summary()```
+* ```t.test()```
+
+Practice subsettings
 
 ##Visualizing data - Basic plots
 
@@ -646,7 +676,7 @@ updated_plot <- ggedit(plot)
 
 ##Extending ggplot - [ggbio](http://www.bioconductor.org/packages/release/bioc/vignettes/ggbio/inst/doc/ggbio.pdf)
 
-Visualization toolkits for genomic data
+Visualization toolkits for genomic data 
 
 ```{r, eval=FALSE}
 source("https://bioconductor.org/biocLite.R")
@@ -657,6 +687,8 @@ biocLite("ggbio")
 * Tracks from GenomicRanges, EnsDb, etc,
 * Circular genomes, plots
 * Mutations, rearrangments, etc.
+
+(But personally cannot recommend)
 
 ##Extending ggplot - [ggtree](https://bioconductor.org/packages/release/bioc/vignettes/ggtree/inst/doc/ggtree.html)
 
