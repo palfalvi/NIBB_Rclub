@@ -3,7 +3,6 @@ title: "Hacky Hours"
 author: "Palfalvi Gergo"
 date: "11/25/2016"
 output:
-  slidy_presentation: default
   ioslides_presentation:
     fig_height: 5
     fig_width: 4
@@ -12,7 +11,7 @@ output:
 subtitle: Improving data manipulation and programming skills
 encoding: utf-8
 transition: rotate
-#runtime: shiny
+runtime: shiny
 ---
 ```{r setup, include=FALSE, echo = FALSE, eval =TRUE}
 Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
@@ -29,7 +28,6 @@ knit_theme$set(thm)
 
 
 ##Why data manipulation?
-
 
 <center> *“There are no routine statistical questions, only questionable statistical routines.”* </center></br> <p style="text-align:right"> /Sir David Cox/ </p>
 
@@ -141,6 +139,20 @@ iris %>% group_by(Species) %>%
     + Perform statistical analysis on differences
     + Visualize data
     + Make report
+
+## Interactivity
+
+```{r, echo = FALSE}
+library(shiny)
+fluidPage(fluidRow(
+  column(6,selectInput(inputId = "X",label="X variable", choices = colnames(iris[,1:4]),selected = "Petal.Length")),
+  column(6,selectInput(inputId = "Y",label="Y variable", choices = colnames(iris[,1:4]),selected = "Petal.Width"))
+))
+
+renderPlot(width = 1000,expr = {
+  ggplot(iris,aes(x=iris[input$X], y=iris[input$Y])) + geom_point(aes(color=iris$Species)) + geom_smooth(method="lm") + xlab(input$X) + ylab(input$Y)
+})
+```
 
 
 ##General workflow of data analysis
