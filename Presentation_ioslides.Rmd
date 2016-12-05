@@ -298,6 +298,7 @@ Download
 * pokemons.csv
 
 Try some functions:
+
 * ```summary()```
 * ```t.test()```
 
@@ -512,7 +513,7 @@ boxplot(cars)
 * Using *Grammar of Graphics*
     + Data
     + aes(thetics)
-    + geom(metrics) 
+    + geom(etrics) 
     
 
 <img src="http://www.science-craft.com/wp-content/uploads/2014/06/ggplot-2.png"  width="400" alt="Picture">
@@ -719,6 +720,21 @@ biocLite("ggtree")
 
 ##Data transformation - dplyer
 
+* Pick observations by their values ```filter()```
+* Reorder the rows ```arrange()```
+* Pick variables by their names ```select()```
+* Create new variables with functions of existing variables ```mutate()```
+* Collapse many values down to a single summary ```summarise()```
+* Use these all conjugated with ```group_by()```
+
+##dplyer basic structures
+
+They all work similarly:
+
+* First argumnet is a data frame (tibble)
+* Subsequent arguments describe what to do with the data frame (variable names)
+* Result is a data frame
+
 
 
 ##Data tidying - tidyr
@@ -752,6 +768,14 @@ biocLite("ggtree")
 
 ##For loops
 
+```{r}
+x <- c(2.4, 3.5, 1.8)
+1:length(x) 
+seq_along(x)
+
+```
+##Functional programming?
+
 ##Looping patterns
 
 ##Unknown output length
@@ -765,5 +789,37 @@ biocLite("ggtree")
 ##Excercises on sequences 
 
 ##Models
+
+##Multiple models with nested data frames
+
+Using the power of ```tidyverse```
+
+```{r nested_data_frames}
+library(tidyverse)
+
+model <- function(df) {
+  lm(Sepal.Length ~ Sepal.Width, data = df)
+}
+
+iris_nested <- iris %>%
+  group_by(Species) %>%
+  nest() %>%
+  mutate(
+    lm = data %>% map(model)
+  )
+```
+
+```{r brooming}
+library(broom)
+
+#Evaluation
+glance()
+#Parameters
+tidy()
+#Residuals
+augment()
+```
+
+
 
 ##R Markdown
